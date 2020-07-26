@@ -1,0 +1,16 @@
+{
+  "name": "auth-api",
+  "version": "1.0.0",
+  "description": "Componente encargado de gestionar el manejo de los tokens de acceso al pi tyba challenge.",
+  "main": "server.js",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node ./app/init/app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
