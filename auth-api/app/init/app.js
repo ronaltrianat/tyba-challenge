@@ -1,15 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const app = express();
 
-const authRouter = require("../modules/auth/routes/routes");
+const start = (options) => {
+  return new Promise((resolve, reject) => {
+    const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(bodyParser.json());
+    app.use(bodyParser.json());
 
-authRouter(app);
+    // routes
+    const authRouter = require("../modules/auth/routes/routes");
+    const usersRouter = require("../modules/users/routes/routes");
+    authRouter(app);
+    usersRouter(app);
 
-app.listen(3000, () => {
-  console.log("Servidor iniciado en el puerto 3000");
-});
+    const server = app.listen(options.port, () => resolve(server));
+  });
+};
+
+module.exports = Object.assign({}, { start });

@@ -4,8 +4,9 @@
   "description": "Componente encargado de gestionar el manejo de los tokens de acceso al pi tyba challenge.",
   "main": "server.js",
   "dependencies": {
+    "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "express": "^4.17.1"
+    "mongoose": "^5.9.25"
   },
   "devDependencies": {},
   "scripts": {

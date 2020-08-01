@@ -1,23 +1,38 @@
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config/config")();
+const messages = require("./handleMessages");
+const usersModel = require("../../models/usersModel");
 
-module.exports.login = async function login(props) {
-  let response = {};
-  if (props.usuario === "user" && props.contrasena === "123456") {
-    const payload = {
-      check: true,
-    };
-    const token = jwt.sign(payload, config.jwtSecretKey, {
-      expiresIn: 1440,
+const USER_NOT_FOUND = { code: 999 };
+const INVALID_PASSWORD = { code: 998 };
+const LOGIN_OK = { code: 0 };
+
+module.exports.login = async function login(req) {
+  try {
+    let user = await usersModel.findOne({ _id: req.idType + req.id }).exec();
+
+    if (!user) {
+      return { success: false, message: messages.getMessage(USER_NOT_FOUND) };
+    }
+
+    if (req.password !== user.password) {
+      return { success: false, message: messages.getMessage(INVALID_PASSWORD) };
+    }
+
+    const payload = { check: true };
+    const token = jwt.sign(payload, config.jwt.secretKey, {
+      expiresIn: config.jwt.expiration,
     });
-    response = {
-      mensaje: "Autenticación correcta",
+
+    return {
+      success: true,
+      mensaje: messages.getMessage(LOGIN_OK),
       token: token,
     };
-  } else {
-    response = { mensaje: "Usuario o contraseña incorrectos" };
+  } catch (error) {
+    console.log(error);
+    return { success: false, message: messages.getMessage(error) };
   }
-  return response;
 };
 
 module.exports.logout = async function logout() {
