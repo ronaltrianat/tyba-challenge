@@ -3,7 +3,10 @@ module.exports = function configSetup() {
     server: {
       port: 3000,
     },
-    db: {
+    userSession: {
+      timeSession: 300, // en segundos
+    },
+    mongodb: {
       connectionString:
         process.env.MONGO_URL || "mongodb://localhost:27017/tyba_challenge_db",
       options: {
@@ -13,9 +16,13 @@ module.exports = function configSetup() {
         useCreateIndex: true,
       },
     },
+    redis: {
+      host: "127.0.0.1",
+      port: 6379,
+    },
     jwt: {
       secretKey: "D3s4rr0ll0.2020.*",
-      expiration: 1440,
+      expiration: "15m", // https://github.com/vercel/ms
     },
   };
 };

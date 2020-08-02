@@ -7,7 +7,7 @@ const messages = {
 };
 
 module.exports.getMessage = function getMessage(req) {
-  return messages.hasOwnProperty(req.code)
+  return req && messages.hasOwnProperty(req.code)
     ? messages[req.code]
     : messages["default"];
 };

@@ -1,5 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const redis = require("redis");
+const redisClient = redis.createClient();
+
+redisClient.on("error", (err) => {
+  console.log("Redis error: ", err);
+});
+
+// routes
+const authRouter = require("../modules/auth/routes/routes");
+const usersRouter = require("../modules/users/routes/routes");
 
 const start = (options) => {
   return new Promise((resolve, reject) => {
@@ -9,9 +19,6 @@ const start = (options) => {
 
     app.use(bodyParser.json());
 
-    // routes
-    const authRouter = require("../modules/auth/routes/routes");
-    const usersRouter = require("../modules/users/routes/routes");
     authRouter(app);
     usersRouter(app);
 

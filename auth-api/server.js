@@ -2,12 +2,13 @@
 
 const app = require("./app/init/app");
 const config = require("./config/config")();
-const db = require("./app/init/db");
+const mongodb = require("./app/init/mongodb");
 
 const start = async () => {
   try {
-    console.log("start db connection");
-    await db.connect(config.db);
+    console.log("start mongodb connection");
+    await mongodb.connect(config.mongodb);
+
     console.log("start server");
     let server = await app.start({ port: config.server.port });
 
