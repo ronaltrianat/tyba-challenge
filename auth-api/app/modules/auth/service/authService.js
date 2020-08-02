@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../../../../config/config")();
 const redis = require("../../../init/redis");
 const messages = require("./handleMessages");
-const usersModel = require("../../models/usersModel");
+const usersModel = require("../../../mongodb/models/usersModel");
 const { v4: uuid4 } = require("uuid");
 const authConstants = require("../constants/authConstants");
 
