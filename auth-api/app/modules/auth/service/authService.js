@@ -6,14 +6,22 @@ const usersModel = require("../../../common/mongodb/models/usersModel");
 const util = require("../../../common/utils/util");
 const { v4: uuid4 } = require("uuid");
 const constants = require("../constants/authConstants");
+const md5 = require("md5");
+const bcrypt = require("bcrypt");
 
+/**
+ * Funcion encargada de realizar el login del usuario.
+ * @param req : En este objeto viene los datos del usuario necesarios
+ * para realizar el login (id, idType, password).
+ */
 module.exports.login = async function login(req) {
   try {
-    let key = `${req.body.idType}${req.body.id}`;
+    let key = md5(`${req.body.idType}-${req.body.id}`);
     let user = await usersModel.findOne({ _id: key }).exec();
 
     if (!user) throw constants.USER_NOT_FOUND;
-    if (req.body.password !== user.password) throw constants.INVALID_PASSWORD;
+    if (!bcrypt.compareSync(req.body.password, user.password))
+      throw constants.INVALID_PASSWORD;
 
     let uuid = uuid4();
 
@@ -50,6 +58,10 @@ module.exports.login = async function login(req) {
   }
 };
 
+/**
+ * Funcion encargada de realziar el logout del usuario.
+ * @param {*} req La sesion se cierra a partir del header Authorization.
+ */
 module.exports.logout = async function logout(req) {
   try {
     let authorization = req.headers.authorization;
@@ -76,6 +88,10 @@ module.exports.logout = async function logout(req) {
   }
 };
 
+/**
+ * Funcion encargada de validar la sesion de un usuario.
+ * @param {*} req La sesion es validada a partir de header Authorization.
+ */
 module.exports.validateSession = async function validateSession(req) {
   try {
     let authorization = req.headers.authorization;
