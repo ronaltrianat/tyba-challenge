@@ -1,5 +1,5 @@
 const messages = require("./handleMessages");
-const usersModel = require("../../../mongodb/models/usersModel");
+const usersModel = require("../../../common/mongodb/models/usersModel");
 
 const USER_REGISTER_OK = { code: 0 };
 

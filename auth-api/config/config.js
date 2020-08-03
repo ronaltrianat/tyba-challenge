@@ -4,7 +4,7 @@ module.exports = function configSetup() {
       port: 3000,
     },
     userSession: {
-      timeSession: 300, // en segundos
+      timeSession: 60, // en segundos
     },
     mongodb: {
       connectionString:
@@ -22,7 +22,7 @@ module.exports = function configSetup() {
     },
     jwt: {
       secretKey: "D3s4rr0ll0.2020.*",
-      expiration: "15m", // https://github.com/vercel/ms
+      expiration: "2m", // https://github.com/vercel/ms
     },
   };
 };

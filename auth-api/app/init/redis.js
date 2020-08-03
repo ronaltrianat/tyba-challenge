@@ -54,4 +54,8 @@ const del = (key) => {
   });
 };
 
-module.exports = Object.assign({}, { get, set, del });
+const expire = (key, expire) => {
+  redisClient.expire(key, expire);
+};
+
+module.exports = Object.assign({}, { get, set, del, expire });
