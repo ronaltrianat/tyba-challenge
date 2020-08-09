@@ -1,6 +1,7 @@
 const authService = require("../service/authService");
 
 exports.login = async function login(req, res) {
+  console.log(req);
   let response = await authService.login(req);
   res.status(200).send(response);
 };

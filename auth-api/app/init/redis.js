@@ -1,30 +1,20 @@
 const redis = require("redis");
-const config = require("../../config/config")();
 
-var redisClient;
+var redisClient = Object.create(null);
 
-if (!redisClient) {
-  console.log("start redis connection");
-  redisClient = redis.createClient(config);
-
-  redisClient.on("connect", function () {
-    console.log("Connected to redis");
+const start = (config) => {
+  return new Promise((resolve, reject) => {
+    redisClient = redis.createClient(config);
+    redisClient.on("connect", () => resolve());
+    redisClient.on("error", (err) => reject(err));
   });
-
-  redisClient.on("error", (err) => {
-    console.log("Redis error: ", err);
-    process.exit(1);
-  });
-}
+};
 
 const get = (key) => {
   return new Promise((resolve, reject) => {
     redisClient.hgetall(key, (err, value) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(value);
-      }
+      if (err) reject(err);
+      else resolve(value);
     });
   });
 };
@@ -32,9 +22,8 @@ const get = (key) => {
 const set = (key, body, expire) => {
   return new Promise((resolve, reject) => {
     redisClient.hmset(key, body, (err, value) => {
-      if (err) {
-        reject(err);
-      } else {
+      if (err) reject(err);
+      else {
         redisClient.expire(key, expire);
         resolve(value);
       }
@@ -45,11 +34,8 @@ const set = (key, body, expire) => {
 const del = (key) => {
   return new Promise((resolve, reject) => {
     redisClient.del(key, (err, value) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(value);
-      }
+      if (err) reject(err);
+      else resolve(value);
     });
   });
 };
@@ -58,4 +44,4 @@ const expire = (key, expire) => {
   redisClient.expire(key, expire);
 };
 
-module.exports = Object.assign({}, { get, set, del, expire });
+module.exports = Object.assign({}, { get, set, del, expire, start });
