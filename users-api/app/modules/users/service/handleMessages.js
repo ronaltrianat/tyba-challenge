@@ -2,6 +2,7 @@
 
 const messages = {
   0: "Usuario registrado correctamente.",
+  999: "Usuario no encontrado.",
   11000: "Usuario ya registrado.",
   default: "Nuestros sistemas estan fallando. Intenta mas tarde.",
 };
