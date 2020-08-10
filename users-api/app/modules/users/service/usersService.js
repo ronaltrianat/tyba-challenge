@@ -17,12 +17,12 @@ module.exports.registerUser = async function registerUser(req) {
       idType: req.idType,
     });
     response = {
-      sucess: true,
+      success: true,
       message: messages.getMessage(USER_REGISTER_OK),
     };
   } catch (error) {
     console.error(error);
-    response = { sucess: false, message: messages.getMessage(error) };
+    response = { success: false, message: messages.getMessage(error) };
   }
   return response;
 };
@@ -30,20 +30,15 @@ module.exports.registerUser = async function registerUser(req) {
 module.exports.searchUser = async function searchUser(req) {
   let response = Object.create(null);
   try {
-    let key = md5(`${req.idType}-${req.id}`);
-    let user = await usersModel.findOne({ _id: key }).exec();
-    if (user) {
-      console.log(user);
-      response = { sucess: true, user: user };
-    } else {
-      response = {
-        sucess: false,
-        message: messages.getMessage(USER_NOT_FOUND),
-      };
-    }
+    let user = await usersModel
+      .findOne({ _id: md5(`${req.idType}-${req.id}`) })
+      .exec();
+    response = user
+      ? { success: true, user: user }
+      : { success: false, message: messages.getMessage(USER_NOT_FOUND) };
   } catch (error) {
     console.error(error);
-    response = { sucess: false, message: messages.getMessage(error) };
+    response = { success: false, message: messages.getMessage(error) };
   }
   return response;
 };

@@ -2,12 +2,13 @@ const jwt = require("../util/token");
 const config = require("../../../../config/config")();
 const redis = require("../../../init/redis");
 const messages = require("./handleMessages");
-const usersModel = require("../../../common/mongodb/models/usersModel");
 const util = require("../../../common/utils/util");
 const { v4: uuid4 } = require("uuid");
 const constants = require("../constants/authConstants");
-const md5 = require("md5");
 const bcrypt = require("bcrypt");
+const apiConnector = require("../../../utils/api-connector");
+
+const apiUsers = apiConnector("http://localhost:3001");
 
 /**
  * Funcion encargada de realizar el login del usuario.
@@ -16,11 +17,14 @@ const bcrypt = require("bcrypt");
  */
 module.exports.login = async function login(req) {
   try {
-    let key = md5(`${req.body.idType}-${req.body.id}`);
-    let user = await usersModel.findOne({ _id: key }).exec();
+    let user = await apiUsers.post("/users/search-user", {
+      id: req.id,
+      idType: req.idType,
+    });
 
-    if (!user) throw constants.USER_NOT_FOUND;
-    if (!bcrypt.compareSync(req.body.password, user.password))
+    if (!user || !user.data || !user.data.success)
+      throw constants.USER_NOT_FOUND;
+    if (!bcrypt.compareSync(req.password, user.data.user.password))
       throw constants.INVALID_PASSWORD;
 
     let uuid = uuid4();
@@ -39,8 +43,8 @@ module.exports.login = async function login(req) {
     await redis.set(
       `${constants.USER_SESSION}:${uuid}`,
       {
-        id: req.body.id,
-        idType: req.body.idType,
+        id: req.id,
+        idType: req.idType,
       },
       config.userSession.timeSession
     );
